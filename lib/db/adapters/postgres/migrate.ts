@@ -3,9 +3,10 @@
  * Runs once on first connection to ensure schema exists.
  */
 
-import { sql, type PostgresJsDatabase } from "drizzle-orm/postgres-js";
+import { sql } from "drizzle-orm";
+import type { PostgresJsDatabase } from "drizzle-orm/postgres-js";
 
-export async function ensureSchema(db: PostgresJsDatabase) {
+export async function ensureSchema(db: PostgresJsDatabase<any>) {
   try {
     // Check if leads table exists
     const result = await db.execute(sql`
@@ -13,10 +14,10 @@ export async function ensureSchema(db: PostgresJsDatabase) {
         SELECT FROM information_schema.tables 
         WHERE table_schema = 'public' 
         AND table_name = 'leads'
-      );
+      ) as exists;
     `);
     
-    const exists = result.rows[0]?.exists;
+    const exists = result[0]?.exists;
     
     if (!exists) {
       console.log('[db/postgres] Running initial schema migration...');

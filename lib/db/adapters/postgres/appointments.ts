@@ -3,7 +3,7 @@
  */
 
 import { randomUUID } from "node:crypto";
-import { eq, and, gte, lte, desc } from "drizzle-orm";
+import { eq, and, gte, lte, desc, inArray } from "drizzle-orm";
 import type { Appointment, AppointmentStatus } from "@/lib/types/appointments";
 import type {
   AppointmentFilter,
@@ -35,7 +35,11 @@ export class PostgresAppointmentRepo implements AppointmentRepo {
     const conditions = [];
 
     if (filter?.status) {
-      conditions.push(eq(appointments.status, filter.status));
+      if (Array.isArray(filter.status)) {
+        conditions.push(inArray(appointments.status, filter.status));
+      } else {
+        conditions.push(eq(appointments.status, filter.status));
+      }
     }
     if (filter?.scheduledAfter) {
       conditions.push(
@@ -54,12 +58,12 @@ export class PostgresAppointmentRepo implements AppointmentRepo {
       .from(appointments)
       .where(where)
       .orderBy(desc(appointments.scheduledFor))
-      .limit(filter?.limit ?? 100);
+      .limit(100);
 
     return rows.map(rowToAppointment);
   }
 
-  async getById(id: string): Promise<Appointment | null> {
+  async get(id: string): Promise<Appointment | null> {
     const db = getDb();
     const [row] = await db
       .select()
@@ -68,34 +72,43 @@ export class PostgresAppointmentRepo implements AppointmentRepo {
     return row ? rowToAppointment(row) : null;
   }
 
-  async updateStatus(id: string, status: AppointmentStatus): Promise<void> {
+  async updateStatus(
+    id: string,
+    status: AppointmentStatus,
+  ): Promise<Appointment | null> {
     const db = getDb();
-    await db
+    const [row] = await db
       .update(appointments)
       .set({ status })
-      .where(eq(appointments.id, id));
+      .where(eq(appointments.id, id))
+      .returning();
+    return row ? rowToAppointment(row) : null;
   }
 
-  async isSlotAvailable(
-    scheduledFor: string,
-    excludeId?: string,
-  ): Promise<boolean> {
+  async isSlotBooked(scheduledFor: string): Promise<boolean> {
     const db = getDb();
-    const conditions = [
-      eq(appointments.scheduledFor, new Date(scheduledFor)),
-      eq(appointments.status, "scheduled"),
-    ];
-
-    if (excludeId) {
-      conditions.push(eq(appointments.id, excludeId));
-    }
-
     const [row] = await db
       .select()
       .from(appointments)
-      .where(and(...conditions));
+      .where(
+        and(
+          eq(appointments.scheduledFor, new Date(scheduledFor)),
+          eq(appointments.status, "scheduled"),
+        ),
+      )
+      .limit(1);
 
-    return !row;
+    return !!row;
+  }
+
+  async getBookedSlotSet(): Promise<Set<string>> {
+    const db = getDb();
+    const rows = await db
+      .select({ scheduledFor: appointments.scheduledFor })
+      .from(appointments)
+      .where(eq(appointments.status, "scheduled"));
+
+    return new Set(rows.map((row) => row.scheduledFor.toISOString()));
   }
 }
 
