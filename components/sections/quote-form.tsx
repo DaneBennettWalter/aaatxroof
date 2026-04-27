@@ -696,14 +696,16 @@ export function QuoteFormDialog({
       >
         {children}
       </Button>
-      <DialogContent className="sm:max-w-lg">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] flex flex-col">
         <DialogHeader>
           <DialogTitle>Get a free quote</DialogTitle>
           <DialogDescription>
             Quick — most folks finish in under a minute.
           </DialogDescription>
         </DialogHeader>
-        <QuoteForm onSuccess={() => setOpen(false)} />
+        <div className="overflow-y-auto flex-1 -mx-4 px-4">
+          <QuoteForm onSuccess={() => setOpen(false)} />
+        </div>
       </DialogContent>
     </Dialog>
   );

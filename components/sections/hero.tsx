@@ -7,7 +7,14 @@ import { cn } from "@/lib/utils";
 
 export function Hero() {
   return (
-    <section className="relative bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-white py-20 md:py-32">
+    <section className="relative bg-gradient-to-br from-primary via-primary/95 to-primary/90 text-white py-20 md:py-32 overflow-hidden">
+      {/* Background image */}
+      <div 
+        className="absolute inset-0 opacity-15 bg-cover bg-center mix-blend-overlay"
+        style={{
+          backgroundImage: 'url("https://images.unsplash.com/photo-1632759145355-8b8f4f9f8a2f?auto=format&fit=crop&w=2400&q=80")',
+        }}
+      />
       <Container>
         <div className="max-w-3xl">
           <h1 className="text-4xl md:text-6xl font-bold mb-6 leading-tight">
