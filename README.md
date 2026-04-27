@@ -1,36 +1,157 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AAA Texas Roofing
+
+**Market:** Central Texas (Austin to San Antonio corridor)  
+**Positioning:** Best roofers in Central Texas — professional, trustworthy, premium
+
+---
+
+## Tech Stack
+
+- **Framework:** Next.js 14 (App Router)
+- **UI:** shadcn/ui + Tailwind CSS
+- **TypeScript:** Full type safety
+- **Deployment:** Vercel-ready
+
+---
 
 ## Getting Started
 
-First, run the development server:
+### Development
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000)
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+npm start
+```
 
-## Learn More
+### Lint
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run lint
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project Structure
 
-## Deploy on Vercel
+```
+aaatxroof.com/
+├── app/                    # Next.js App Router pages
+│   ├── layout.tsx         # Root layout (Header + Footer)
+│   ├── page.tsx           # Homepage
+│   └── globals.css        # Global styles + Tailwind config
+├── components/
+│   ├── layout/            # Header, Footer, Container
+│   ├── sections/          # Hero, Services, CTA, etc.
+│   └── ui/                # shadcn/ui components
+├── lib/                   # Utilities
+└── public/                # Static assets
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Brand Colors (Texas Sky Palette)
+
+- **Primary (Deep Blue):** `#1E3A5F` — Trust, stability
+- **Secondary (Burnt Orange):** `#D97706` — Energy, warmth, Texas pride
+- **Accent (Slate):** `#475569` — Neutral strength
+- **Success (Roof Green):** `#059669` — Quality, completion
+- **Neutral Light:** `#F8FAFC` — Backgrounds
+- **Neutral Dark:** `#0F172A` — Text
+
+See `~/aaatxroof-branding/BRAND_OPTIONS.md` for full palette details and alternatives.
+
+---
+
+## Design System
+
+Built with **shadcn/ui** for professional, accessible components.
+
+### Installed Components
+
+- Button, Input, Card, Form, Label, Textarea
+- Navigation Menu, Dropdown Menu
+- Dialog, Alert, Badge
+
+### Layout Components
+
+- `<Container>` — Max-width wrapper with responsive padding
+- `<Header>` — Sticky header with navigation + phone CTA
+- `<Footer>` — 4-column footer with service links
+
+### Section Components
+
+- `<Hero>` — Homepage hero with CTA + trust indicators
+- `<Services>` — 6 service cards grid
+- `<CTA>` — Call-to-action section
+
+---
+
+## Next Steps
+
+### Phase 2: Core Pages
+- [ ] Services pages (individual service detail pages)
+- [ ] Projects/portfolio section
+- [ ] About page
+- [ ] Contact page with quote form
+- [ ] Lead capture API routes
+
+### Phase 3: Content & CMS
+- [ ] Headless CMS setup (Sanity or Payload)
+- [ ] Blog structure
+- [ ] Service area map
+- [ ] Reviews system
+
+### Phase 4: Polish & Launch
+- [ ] Performance optimization (Lighthouse 95+)
+- [ ] SEO (schema markup, meta tags, sitemap)
+- [ ] Analytics setup (GA4, call tracking)
+- [ ] Real logo + finalized branding
+- [ ] Mobile testing
+- [ ] Deploy to Vercel
+
+### Phase 5: Post-Launch
+- [ ] AI quote assistant
+- [ ] Replace stock photos with real projects
+- [ ] A/B testing
+- [ ] CRM integration
+
+---
+
+## Environment Variables
+
+Copy `.env.local.template` to `.env.local` and fill in values when ready.
+
+---
+
+## Deployment
+
+This project is optimized for **Vercel**:
+
+1. Push to GitHub
+2. Import in Vercel
+3. Deploy
+
+Vercel automatically detects Next.js and configures build settings.
+
+---
+
+## Documentation
+
+- [Next.js Docs](https://nextjs.org/docs)
+- [shadcn/ui Docs](https://ui.shadcn.com)
+- [Tailwind CSS](https://tailwindcss.com)
+
+---
+
+**Built by Roan 🦅**  
+**Spec:** `~/aaatxroof-spec.md`  
+**Branding:** `~/aaatxroof-branding/`
