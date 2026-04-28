@@ -15,7 +15,7 @@ import { appointments } from "../../schema";
 
 export class PostgresAppointmentRepo implements AppointmentRepo {
   async create(input: NewAppointment): Promise<Appointment> {
-    const db = getDb();
+    const db = await getDb();
     const id = randomUUID();
     const [row] = await db
       .insert(appointments)
@@ -31,7 +31,7 @@ export class PostgresAppointmentRepo implements AppointmentRepo {
   }
 
   async list(filter?: AppointmentFilter): Promise<Appointment[]> {
-    const db = getDb();
+    const db = await getDb();
     const conditions = [];
 
     if (filter?.status) {
@@ -64,7 +64,7 @@ export class PostgresAppointmentRepo implements AppointmentRepo {
   }
 
   async get(id: string): Promise<Appointment | null> {
-    const db = getDb();
+    const db = await getDb();
     const [row] = await db
       .select()
       .from(appointments)
@@ -76,7 +76,7 @@ export class PostgresAppointmentRepo implements AppointmentRepo {
     id: string,
     status: AppointmentStatus,
   ): Promise<Appointment | null> {
-    const db = getDb();
+    const db = await getDb();
     const [row] = await db
       .update(appointments)
       .set({ status })
@@ -86,7 +86,7 @@ export class PostgresAppointmentRepo implements AppointmentRepo {
   }
 
   async isSlotBooked(scheduledFor: string): Promise<boolean> {
-    const db = getDb();
+    const db = await getDb();
     const [row] = await db
       .select()
       .from(appointments)
@@ -102,7 +102,7 @@ export class PostgresAppointmentRepo implements AppointmentRepo {
   }
 
   async getBookedSlotSet(): Promise<Set<string>> {
-    const db = getDb();
+    const db = await getDb();
     const rows = await db
       .select({ scheduledFor: appointments.scheduledFor })
       .from(appointments)

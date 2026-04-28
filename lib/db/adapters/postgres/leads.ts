@@ -11,7 +11,7 @@ import { leads } from "../../schema";
 
 export class PostgresLeadRepo implements LeadRepo {
   async create(input: NewLead): Promise<Lead> {
-    const db = getDb();
+    const db = await getDb();
     const id = randomUUID();
     const [row] = await db
       .insert(leads)
@@ -26,7 +26,7 @@ export class PostgresLeadRepo implements LeadRepo {
   }
 
   async list(filter?: LeadFilter): Promise<Lead[]> {
-    const db = getDb();
+    const db = await getDb();
     const conditions = [];
 
     if (filter?.status) {
@@ -55,13 +55,13 @@ export class PostgresLeadRepo implements LeadRepo {
   }
 
   async get(id: string): Promise<Lead | null> {
-    const db = getDb();
+    const db = await getDb();
     const [row] = await db.select().from(leads).where(eq(leads.id, id));
     return row ? rowToLead(row) : null;
   }
 
   async updateStatus(id: string, status: LeadStatus): Promise<Lead | null> {
-    const db = getDb();
+    const db = await getDb();
     const [row] = await db
       .update(leads)
       .set({ status })
@@ -71,7 +71,7 @@ export class PostgresLeadRepo implements LeadRepo {
   }
 
   async count(filter?: LeadFilter): Promise<number> {
-    const db = getDb();
+    const db = await getDb();
     const conditions = [];
 
     if (filter?.status) {

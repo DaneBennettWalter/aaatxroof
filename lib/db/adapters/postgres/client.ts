@@ -13,10 +13,10 @@ import { ensureSchema } from "./migrate";
 export type AppDb = PostgresJsDatabase<typeof schema>;
 
 let cached: AppDb | null = null;
-let migrationRun = false;
+let migrationPromise: Promise<void> | null = null;
 
-export function getDb(): AppDb {
-  if (cached) return cached;
+export async function getDb(): Promise<AppDb> {
+  if (cached && !migrationPromise) return cached;
 
   const connectionString = process.env.DATABASE_URL;
   if (!connectionString) {
@@ -26,19 +26,19 @@ export function getDb(): AppDb {
   }
 
   // Create postgres.js client (serverless-optimized)
-  const client = postgres(connectionString, {
-    ssl: { rejectUnauthorized: false }, // Required for Supabase/Neon
-    max: 1, // Serverless: one connection per function instance
-  });
-
-  cached = drizzle(client, { schema });
-
-  // Run migration on first connection (async, non-blocking)
-  if (!migrationRun) {
-    migrationRun = true;
-    ensureSchema(cached).catch((err) => {
-      console.error("[db/postgres] Auto-migration failed:", err);
+  if (!cached) {
+    const client = postgres(connectionString, {
+      ssl: { rejectUnauthorized: false }, // Required for Supabase/Neon
+      max: 1, // Serverless: one connection per function instance
     });
+    cached = drizzle(client, { schema });
+  }
+
+  // Run migration synchronously on first connection
+  if (!migrationPromise) {
+    migrationPromise = ensureSchema(cached);
+    await migrationPromise;
+    migrationPromise = null; // Clear after completion
   }
 
   return cached;
