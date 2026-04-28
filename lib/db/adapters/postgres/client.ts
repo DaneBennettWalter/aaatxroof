@@ -28,8 +28,10 @@ export async function getDb(): Promise<AppDb> {
   // Create postgres.js client (serverless-optimized)
   if (!cached) {
     const client = postgres(connectionString, {
-      ssl: { rejectUnauthorized: false }, // Required for Supabase/Neon
+      ssl: "require",
       max: 1, // Serverless: one connection per function instance
+      idle_timeout: 20,
+      connect_timeout: 10,
     });
     cached = drizzle(client, { schema });
   }
